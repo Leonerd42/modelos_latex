@@ -18,7 +18,7 @@
 	french,				% idioma adicional para hifenização
 	spanish,			% idioma adicional para hifenização
 	brazil,				% o último idioma é o principal do documento
-	]{abntex2}
+	]{lib/abntex2}
 
 
 % --------------------------------------------------------
@@ -33,16 +33,37 @@
 \usepackage{indentfirst}		% Indenta o primeiro parágrafo de cada seção.
 \usepackage{color}				% Controle das cores
 \usepackage{graphicx}			% Inclusão de gráficos
-\usepackage{lipsum}				% para geração de dummy text
+\usepackage{lipsum}				% para geração de du
+
+\let\printglossary\relax
+\let\theglossary\relax
+\let\endtheglossary\relax
+\usepackage{lib/updateAbntex}
+
 \usepackage[brazilian,hyperpageref]{}	 % Paginas com as citações na bibl
-\usepackage[alf]{abntex2cite}	% Citações padrão ABNT
-\usepackage[br]{nicealgo}       % Pacote para criação de algoritmos
-\usepackage{customizacoes}      % Pacote de customizações do abntex2
+\usepackage{microtype} 
+
+\usepackage{silence}
+%Disable all warnings issued by latex starting with "You have..."
+\WarningFilter{latex}{You have requested package}
+\usepackage[alf, abnt-etal-list=0 ]{lib/abntex2cite}	% Citações padrão ABNT
+\usepackage[br]{lib/nicealgo}       % Pacote para criação de algoritmos
+\usepackage{lib/customizacoes}      % Pacote de customizações do abntex2
+
+\usepackage{listings}
+\usepackage[normalem]{ulem} % Strikethrough package
+
 
 
 % --------------------------------------------------------
 % CONFIGURAÇÕES DE PACOTES
 % --------------------------------------------------------
+
+
+% Configurações do pacote listing
+\renewcommand{\lstlistingname}{Código} %Mudança no caption do listing para Código
+\renewcommand{\lstlistlistingname}{Lista de códigos} %Mudança no caption da lista de listings.
+
 
 % Configurações do pacote backref
 \renewcommand{\familydefault}{\sfdefault}
@@ -60,6 +81,34 @@
 % 		Citado #1 vezes nas páginas #2.%
 % 	\fi}%
 
+
+% ---
+% Posiciona figuras e tabelas no topo da página quando adicionadas sozinhas
+% em um página em branco. Ver https://github.com/abntex/abntex2/issues/170
+\makeatletter
+\setlength{\@fptop}{5pt} % Set distance from top of page to first float
+\makeatother
+% ---
+
+% ---
+% Possibilita criação de Quadros e Lista de quadros.
+% Ver https://github.com/abntex/abntex2/issues/176
+%
+\newcommand{\quadroname}{Quadro}
+\newcommand{\listofquadrosname}{Lista de quadros}
+
+\newfloat[chapter]{quadro}{loq}{\quadroname}
+\newlistof{listofquadros}{loq}{\listofquadrosname}
+\newlistentry{quadro}{loq}{0}
+
+% configurações para atender às regras da ABNT
+\setfloatadjustment{quadro}{\centering}
+\counterwithout{quadro}{chapter}
+\renewcommand{\cftquadroname}{\quadroname\space} 
+\renewcommand*{\cftquadroaftersnum}{\hfill--\hfill}
+
+\setfloatlocations{quadro}{hbtp}
+% ---
 
 % --------------------------------------------------------
 % INFORMAÇÕES DE DADOS PARA CAPA E FOLHA DE ROSTO
@@ -124,6 +173,16 @@
 
 \makeindex
 
+% ---
+% GLOSSARIO
+% ---
+%\makeglossaries
+% ---
+% Exemplo de configurações do glossairo
+\renewcommand*{\glsseeformat}[3][\seename]{\textit{#1}  
+ \glsseelist{#2}}
+% ---
+
 
 % --------------------------------------------------------
 % INÍCIO DO DOCUMENTO
@@ -149,6 +208,8 @@
 % (o * indica que haverá a ficha bibliográfica)
 \imprimirfolhaderosto
 
+
+
 % --------------------------------------------------------
 % SUMÁRIO
 % --------------------------------------------------------
@@ -166,14 +227,14 @@
 \pagestyle{simple}
 
 % Arquivos .tex do texto, podendo ser escritos em um único arquivo ou divididos da forma desejada
-\input{introducao.tex}
-\input{conclusao.tex}
+\input{chapters/introducao}
+\input{chapters/conclusao}
 
 % --------------------------------------------------------
 % REFERÊNCIAS BIBLIOGRÁFICAS
 % --------------------------------------------------------
 
-\bibliography{referencias}
+\bibliography{chapters/referencias}
 
 
 % --------------------------------------------------------

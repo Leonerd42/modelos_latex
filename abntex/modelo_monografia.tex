@@ -18,13 +18,12 @@
 	french,				% idioma adicional para hifenização
 	spanish,			% idioma adicional para hifenização
 	brazil,				% o último idioma é o principal do documento
-	]{abntex2}
+	]{lib/abntex2}
 
 
 % --------------------------------------------------------
 % PACOTES
 % --------------------------------------------------------
-
 \usepackage{cmap}				% Mapear caracteres especiais no PDF
 \usepackage{lmodern}			% Usa a fonte Latin Modern
 \usepackage[T1]{fontenc}		% Selecao de codigos de fonte.
@@ -34,15 +33,33 @@
 \usepackage{color}				% Controle das cores
 \usepackage{graphicx}			% Inclusão de gráficos
 \usepackage{lipsum}				% para geração de dummy text
-\usepackage[brazilian,hyperpageref]{}	 % Paginas com as citações na bibl
-\usepackage[alf]{abntex2cite}	% Citações padrão ABNT
-\usepackage[br]{nicealgo}       % Pacote para criação de algoritmos
-\usepackage{customizacoes}      % Pacote de customizações do abntex2
 
+\let\printglossary\relax
+\let\theglossary\relax
+\let\endtheglossary\relax
+\usepackage{lib/updateAbntex}
+
+\usepackage[brazilian,hyperpageref]{}	 % Paginas com as citações na bibl
+\usepackage{microtype} 
+
+\usepackage{silence}
+%Disable all warnings issued by latex starting with "You have..."
+\WarningFilter{latex}{You have requested package}
+\usepackage[alf, abnt-etal-list=0 ]{lib/abntex2cite}	% Citações padrão ABNT
+\usepackage[br]{lib/nicealgo}       % Pacote para criação de algoritmos
+\usepackage{lib/customizacoes}      % Pacote de customizações do abntex2
+
+\usepackage{listings}
+\usepackage[normalem]{ulem} % Strikethrough package
 
 % --------------------------------------------------------
 % CONFIGURAÇÕES DE PACOTES
 % --------------------------------------------------------
+
+% Configurações do pacote listing
+\renewcommand{\lstlistingname}{Código} %Mudança no caption do listing para Código
+\renewcommand{\lstlistlistingname}{Lista de códigos} %Mudança no caption da lista de listings.
+
 
 % Configurações do pacote backref
 \renewcommand{\familydefault}{\sfdefault}
@@ -68,7 +85,7 @@
 \titulo{Título do Texto}
 \autor{Nome do Autor}
 \local{Bauru}
-\data{Maio/2015}
+\data{Outubro/2018}
 \orientador{Prof. Dr. Seu Orientador}
 \instituicao{%
   Universidade Estadual Paulista ``Júlio de Mesquita Filho''
@@ -106,6 +123,35 @@
 \makeatother
 
 
+% ---
+% Posiciona figuras e tabelas no topo da página quando adicionadas sozinhas
+% em um página em branco. Ver https://github.com/abntex/abntex2/issues/170
+\makeatletter
+\setlength{\@fptop}{5pt} % Set distance from top of page to first float
+\makeatother
+% ---
+
+% ---
+% Possibilita criação de Quadros e Lista de quadros.
+% Ver https://github.com/abntex/abntex2/issues/176
+%
+\newcommand{\quadroname}{Quadro}
+\newcommand{\listofquadrosname}{Lista de quadros}
+
+\newfloat[chapter]{quadro}{loq}{\quadroname}
+\newlistof{listofquadros}{loq}{\listofquadrosname}
+\newlistentry{quadro}{loq}{0}
+
+% configurações para atender às regras da ABNT
+\setfloatadjustment{quadro}{\centering}
+\counterwithout{quadro}{chapter}
+\renewcommand{\cftquadroname}{\quadroname\space} 
+\renewcommand*{\cftquadroaftersnum}{\hfill--\hfill}
+
+\setfloatlocations{quadro}{hbtp}
+% ---
+
+
 % --------------------------------------------------------
 % ESPAÇAMENTOS ENTRE LINHAS E PARÁGRAFOS
 % --------------------------------------------------------
@@ -119,11 +165,20 @@
 
 % --------------------------------------------------------
 % COMPILANDO O ÍNDICE
-% --------------------------------------------------------
-
+% ---------------------------------------------------
 \makeindex
-
-
+% ---
+ 
+% ---
+% GLOSSARIO
+% ---
+\makeglossaries
+% ---
+% Exemplo de configurações do glossairo
+\renewcommand*{\glsseeformat}[3][\seename]{\textit{#1}  
+ \glsseelist{#2}}
+% ---
+ 
 % --------------------------------------------------------
 % INÍCIO DO DOCUMENTO
 % --------------------------------------------------------
@@ -153,7 +208,7 @@
 	\sffamily
 	\vspace*{\fill}					% Posição vertical
 	\begin{center}					% Minipage Centralizado
-	\fbox{\begin{minipage}[c][8cm]{15.5cm}		% Largura
+	\fbox{\begin{minipage}[c][7.5cm]{12.5cm}		% Largura
 	\small
 	\imprimirautor
 	\hspace{0.5cm} \imprimirtitulo  / \imprimirautor. --
@@ -189,9 +244,18 @@
     \vspace*{\fill}
    \end{center}
    \center Banca Examinadora
-   \assinatura{\textbf{\imprimirorientador} \\ Orientador}
-   \assinatura{\textbf{Professor} \\ Convidado 1}
-   \assinatura{\textbf{Professor} \\ Convidado 2}
+   \assinatura{\textbf{\imprimirorientador} \\ Orientador\\
+   Universidade Estadual Paulista "Júlio de Mesquita Filho"\\
+   Faculdade de Ciências \\
+   Departamento de Ciência da Computação}
+   \assinatura{\textbf{Professor Convidado 1} \\
+   Universidade Estadual Paulista "Júlio de Mesquita Filho"\\
+   Faculdade de Ciências \\
+   Departamento de Ciência da Computação}
+   \assinatura{\textbf{Professor Convidado 2} \\
+   Universidade Estadual Paulista "Júlio de Mesquita Filho"\\
+   Faculdade de Ciências \\
+   Departamento de Ciência da Computação}
    \begin{center}
     \vspace*{0.5cm}
     \par
@@ -202,10 +266,10 @@
 
 % Dedicatória
 \begin{dedicatoria}
-   \vspace*{\fill}
-   \centering
-   \noindent
-   \textit{Espaço destinado à dedicátoria do texto.} \vspace*{\fill}
+    \vspace*{\fill}
+	\begin{flushright}
+		\textit{Espaço destinado à dedicátoria do texto.} 
+	\end{flushright}
 \end{dedicatoria}
 
 % Agradecimentos
@@ -217,7 +281,8 @@ Espaço destinado aos agradecimentos.
 \begin{epigrafe}
     \vspace*{\fill}
 	\begin{flushright}
-		\textit{Espaço destinado à epígrafe.}
+		\textit{Espaço destinado à epígrafe.}\\
+		Não esquecer autor
 	\end{flushright}
 \end{epigrafe}
 
@@ -229,14 +294,14 @@ Espaço destinado aos agradecimentos.
 % resumo em português
 \setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
 \begin{resumo}
-Espaço destinado à escrita do resumo.
+Espaço destinado à escrita do resumo.\\
 \textbf{Palavras-chave:} Palavras-chave de seu resumo.
 \end{resumo}
 
 % resumo em inglês
 \begin{resumo}[Abstract]
  \begin{otherlanguage*}{english}
-Abstract area.
+Abstract area.\\
 \textbf{Keywords:} Abstract keywords.
  \end{otherlanguage*}
 \end{resumo}
@@ -251,6 +316,13 @@ Abstract area.
 \listoffigures*
 \cleardoublepage
 
+% --------------------------------------------------------
+% LISTA DE QUADROS
+% --------------------------------------------------------
+\pdfbookmark[0]{\listofquadrosname}{loq}
+\listofquadros*
+\cleardoublepage
+% ---
 
 % --------------------------------------------------------
 % LISTA DE TABELAS
@@ -261,31 +333,28 @@ Abstract area.
 \listoftables*
 \cleardoublepage
 
+% --------------------------------------------------------
+% LISTA DE CÓDIGOS
+% --------------------------------------------------------
+ 
+\counterwithout{lstlisting}{section}
+\pdfbookmark[0]{\lstlistlistingname}{lof}
+\lstlistoflistings
+\cleardoublepage
 
 % --------------------------------------------------------
 % LISTA DE ABREVIATURAS E SIGLAS
 % --------------------------------------------------------
 
 % inserir lista de abreviaturas e siglas
-\begin{siglas}
-  \item[Fig.] Area of the $i^{th}$ component
-  \item[456] Isto é um número
-  \item[123] Isto é outro número
-  \item[lauro cesar] este é o meu nome
-\end{siglas}
+\imprimirlistadesiglas
 
 % --------------------------------------------------------
 % LISTA DE SÍMBOLOS
 % --------------------------------------------------------
 
 % inserir lista de símbolos
-\begin{simbolos}
-  \item[$ \Gamma $] Letra grega Gama
-  \item[$ \Lambda $] Lambda
-  \item[$ \zeta $] Letra grega minúscula zeta
-  \item[$ \in $] Pertence
-\end{simbolos}
-
+\imprimirlistadesimbolos
 
 % --------------------------------------------------------
 % SUMÁRIO
@@ -304,8 +373,8 @@ Abstract area.
 \pagestyle{simple}
 
 % Arquivos .tex do texto, podendo ser escritos em um único arquivo ou divididos da forma desejada
-\input{introducao.tex}
-\input{conclusao.tex}
+\input{chapters/introducao}
+\input{chapters/conclusao}
 
 
 % --------------------------------------------------------
@@ -319,7 +388,7 @@ Abstract area.
 % REFERÊNCIAS BIBLIOGRÁFICAS
 % --------------------------------------------------------
 
-\bibliography{referencias}
+\bibliography{chapters/referencias}
 
 
 % --------------------------------------------------------
