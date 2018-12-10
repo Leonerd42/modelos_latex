@@ -37,7 +37,7 @@
 \let\printglossary\relax
 \let\theglossary\relax
 \let\endtheglossary\relax
-\usepackage{lib/updateAbntex}
+\usepackage{lib/update-abntex}
 
 \usepackage[brazilian,hyperpageref]{}	 % Paginas com as citações na bibl
 \usepackage{microtype} 
@@ -333,28 +333,7 @@ Abstract area.\\
 \listoftables*
 \cleardoublepage
 
-% --------------------------------------------------------
-% LISTA DE CÓDIGOS
-% --------------------------------------------------------
- 
-\counterwithout{lstlisting}{section}
-\pdfbookmark[0]{\lstlistlistingname}{lof}
-\lstlistoflistings
-\cleardoublepage
-
-% --------------------------------------------------------
-% LISTA DE ABREVIATURAS E SIGLAS
-% --------------------------------------------------------
-
-% inserir lista de abreviaturas e siglas
-\imprimirlistadesiglas
-
-% --------------------------------------------------------
-% LISTA DE SÍMBOLOS
-% --------------------------------------------------------
-
-% inserir lista de símbolos
-\imprimirlistadesimbolos
+%
 
 % --------------------------------------------------------
 % SUMÁRIO
